@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PostCard from "./components/PostCard";
+import PostDetail from "./pages/PostDetail";
+import { Post } from "./utils/helpers";
+import samplePosts from "./data/samplePosts";
 
-function App() {
+const App: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>(samplePosts);
+
+  const handleDelete = (id: string) => {
+    setPosts((prev) => prev.filter((p) => p.id !== id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="p-5">
+        <h1 className="text-2xl font-bold mb-5">📰 Danh sách Bài viết</h1>
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {posts.map((post) => (
+                  <PostCard key={post.id} post={post} onDelete={handleDelete} />
+                ))}
+              </div>
+            }
+          />
+          <Route
+            path="/posts/:id"
+            element={<PostDetail posts={posts} onDelete={handleDelete} />}
+          />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
